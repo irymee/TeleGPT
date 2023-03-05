@@ -15,7 +15,7 @@ python3 bot.py
 
 ## Deployment
 
-**BEFORE YOU DEPLOY ON HEROKU, YOU SHOULD FORK THE REPO AND CHANGE ITS NAME TO ANYTHING ELSE**<br>
+**Before you deploy on heroku, you should fork the repo and change its name to anything else**<br>
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy/https://github.com/i-ryme/TeleGPT)</br>
 
 ## Support
