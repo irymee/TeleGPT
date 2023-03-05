@@ -43,10 +43,16 @@ def reply_to_message(client, message):
     user_id = message.from_user.id
     # Get today's date in UTC
     today = datetime.utcnow().date()
+    # Check if user is a paid user
+    is_paid_user = False  # replace with logic to check if user is paid
+    if is_paid_user:
+        max_responses_per_day = 20
+    else:
+        max_responses_per_day = 2
     # Get the number of responses the user has made today
     user_responses = responses_collection.find_one({"user_id": user_id, "date": today})
-    if user_responses and user_responses.get("count", 0) >= 10:
-        client.send_message(message.chat.id, "Sorry, you have reached the limit of 10 responses per day.")
+    if user_responses and user_responses.get("count", 0) >= max_responses_per_day:
+        client.send_message(message.chat.id, f"Sorry, you have reached the limit of {max_responses_per_day} responses per day.")
         return
     # Generate text using the OpenAI API
     prompt = message.text
@@ -57,6 +63,19 @@ def reply_to_message(client, message):
         responses_collection.update_one({"_id": user_responses["_id"]}, {"$inc": {"count": 1}})
     else:
         responses_collection.insert_one({"user_id": user_id, "date": today, "count": 1})
+
+@app.on_message(filters.command("add_paid_user"))
+def add_paid_user(client, message):
+    # Check if user is an admin (replace with your own logic to check for admin status)
+    is_admin = False
+    if not is_admin:
+        client.send_message(message.chat.id, "Sorry, you are not authorized to perform this action.")
+        return
+    # Get user ID and add to database
+    user_id = message.text.split()[1]  # Assumes format "/add_paid_user <user_id>"
+    responses_collection.insert_one({"user_id": user_id, "date": datetime.utcnow().date(), "count": 0})
+    client.send_message(message.chat.id, f"User {user_id} has been added as a paid user.")
+
 
 # Start the bot
 app.run()
