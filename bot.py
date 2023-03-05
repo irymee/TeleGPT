@@ -1,7 +1,7 @@
 import openai
-import pyrogram
 import pymongo
 from datetime import datetime
+from pyrogram import Client, filters
 
 # Set up OpenAI API credentials
 openai.api_key = "YOUR_API_KEY"
@@ -26,7 +26,17 @@ def generate_text(prompt):
     return message
 
 # Define Pyrogram bot function
-app = pyrogram.Client("my_bot_token", api_id=API_ID, api_hash=API_HASH)
+app = Client("my_bot_token", api_id=API_ID, api_hash=API_HASH)
+
+# Define start function
+def start():
+    message = "I'm a chatbot powered by GPT! Send me a message and I'll generate a response based on your input."
+    return message
+
+@app.on_message(filters.command("start"))
+def on_start_command(client, message):
+    # Respond to start command
+    client.send_message(message.chat.id, start())
 
 @app.on_message()
 def reply_to_message(client, message):
@@ -50,3 +60,7 @@ def reply_to_message(client, message):
 
 # Start the bot
 app.run()
+
+"""
+When the user sends the `/start` command to the bot, the `on_start_command` function is triggered and sends a welcome message containing a brief description of the bot's capabilities. The bot then listens for incoming messages and generates responses using the OpenAI API's GPT-3.5-Turbo model. If the user exceeds their daily limit of 10 responses, the bot will notify them and stop generating responses.
+"""
