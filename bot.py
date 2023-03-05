@@ -15,7 +15,7 @@ ADMIN = environ.get("ADMIN")
 openai.api_key = "OPENAI_API"
 
 # Set up PyMongo credentials and client
-mongo_client = pymongo.MongoClient(MONGOURL)
+mongo_client = pymongo.MongoClient(MONGO_URL)
 db = mongo_client["mydatabase"]
 responses_collection = db["responses"]
 users_collection = db["users"]
