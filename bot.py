@@ -76,5 +76,11 @@ def reply_to_message(client, message):
     else:
         responses_collection.insert_one({"user_id": user_id, "date": today, "count": 1})
 
+@app.on_message(filters.command("add_paid_user") & filters.user(ADMIN))
+def add_paid_user(client, message):
+    user_id = message.text.split()[1]
+    users_collection.update_one({"user_id": user_id}, {"$set": {"paid": True}}, upsert=True)
+    client.send_message(message.chat.id, f"User {user_id} has been added as a paid user.")
+
 # Start the bot
 app.run()
