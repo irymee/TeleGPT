@@ -1,2 +1,2 @@
 # GPT-Powered Chatbot
-This is a chatbot powered by OpenAI's GPT-3.5-Turbo model. It listens for incoming messages and generates responses based on the user's input using the OpenAI API. The bot is built using the Pyrogram library and MongoDB for data storage. Users are limited to 10 responses per day. To get started, simply send a message to the bot and it will generate a response based on your input.
+This bot is a chatbot powered by OpenAI's GPT-3.5-Turbo model. It generates responses to messages sent by users. Users have a limit on the number of responses they can receive per day, with paid users having a higher limit than free users. The bot uses a MongoDB database to keep track of user information and response counts. An admin can add paid users to the database.
