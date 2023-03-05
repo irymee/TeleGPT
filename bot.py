@@ -2,6 +2,7 @@ import openai
 import pymongo
 from datetime import datetime
 from pyrogram import Client, filters
+from pyrogram.types import *
 from os import environ
 
 # Environment variables
@@ -65,6 +66,8 @@ def reply_to_message(client, message):
     if remaining_replies == 0:
         client.send_message(message.chat.id, "Sorry, you have reached your daily limit of replies.")
         return
+    # Show typing
+    client.send_chat_action(message.chat.id, ChatAction.TYPING)
     # Get today's date in UTC
     today = datetime.utcnow().date()
     # Get the number of responses the user has made today
@@ -75,6 +78,8 @@ def reply_to_message(client, message):
     # Generate text using the OpenAI API
     prompt = message.text
     generated_text = generate_text(prompt)
+    # Send typing action again to simulate delay
+    client.send_chat_action(message.chat.id, ChatAction.TYPING)
     client.send_message(message.chat.id, generated_text)
     # Decrement the user's remaining reply count for today
     users_collection.update_one({"user_id": user_id}, {"$inc": {"remaining_replies": -1}})
@@ -83,6 +88,7 @@ def reply_to_message(client, message):
         responses_collection.update_one({"_id": user_responses["_id"]}, {"$inc": {"count": 1}})
     else:
         responses_collection.insert_one({"user_id": user_id, "date": today, "count": 1})
+
 
 @app.on_message(filters.command("add_paid_user") & filters.user(ADMIN))
 def add_paid_user(client, message):
