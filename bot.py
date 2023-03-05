@@ -2,12 +2,19 @@ import openai
 import pymongo
 from datetime import datetime
 from pyrogram import Client, filters
+from os import environment
+
+#environment
+BOT_TOKEN = get.environ("TOKEN")
+API_ID = get.environ("API_ID")
+API_HASH = get.environ("API_HASH")
+MONGOURL = get.environ("MONGOURL")
 
 # Set up OpenAI API credentials
-openai.api_key = "YOUR_API_KEY"
+openai.api_key = "OPENAI_API"
 
 # Set up PyMongo credentials and client
-mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
+mongo_client = pymongo.MongoClient(MONGOURL)
 db = mongo_client["mydatabase"]
 responses_collection = db["responses"]
 users_collection = db["users"]
@@ -27,7 +34,7 @@ def generate_text(prompt):
     return message
 
 # Define Pyrogram bot function
-app = Client("my_bot_token", api_id=API_ID, api_hash=API_HASH)
+app = Client("bot_token=BOT_TOKEN", api_id=API_ID, api_hash=API_HASH)
 
 # Define start function
 def start():
