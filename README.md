@@ -8,3 +8,6 @@ git clone https://github.com/i-ryme/TeleGPT
 pip3 install -r requirements.txt
 python3 bot.py
 ```
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
