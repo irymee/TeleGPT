@@ -3,7 +3,7 @@ This bot is a chatbot powered by OpenAI's GPT-3.5-Turbo model. It generates resp
 
 ## Environment Variables
 
-To run this project, you will need to add environment variables, please refer [bot.py](https://github.com/i-ryme/TeleGPT/blob/main/bot.py)
+To run this project, you will need to add environment variables, please refer [bot.py](https://github.com/i-ryme/TeleGPT/blob/bfe3227d4fc84f555f122749e9f7f61ce1c14471/bot.py#L8)
 
 ## Installation
 
