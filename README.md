@@ -15,7 +15,7 @@ python3 bot.py
 
 ## Support
 
-For support, email ryme@duck.com or ping me at telegram. [ryme](https://telegram.me/iryme).
+For support, email ryme@duck.com or ping me at telegram [@iryme](https://telegram.me/iryme).
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
