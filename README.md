@@ -22,6 +22,10 @@ git clone https://github.com/i-ryme/TeleGPT
 pip3 install -r requirements.txt
 python3 bot.py
 ```
+
+## Support
+
+For support, email ryme@duck.com or ping me at telegram. [ryme](https://telegram.me/iryme).
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
