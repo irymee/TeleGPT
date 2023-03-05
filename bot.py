@@ -10,6 +10,7 @@ openai.api_key = "YOUR_API_KEY"
 mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = mongo_client["mydatabase"]
 responses_collection = db["responses"]
+users_collection = db["users"]
 
 # Define function to generate text using the gpt-3.5-turbo model
 def generate_text(prompt):
@@ -33,6 +34,10 @@ def start():
     message = "I'm a chatbot powered by GPT! Send me a message and I'll generate a response based on your input."
     return message
 
+# Define function to add a user to the database
+def add_user_to_db(user_id, is_paid=False):
+    users_collection.insert_one({"user_id": user_id, "is_paid": is_paid, "remaining_replies": 20 if is_paid else 2})
+
 @app.on_message(filters.command("start"))
 def on_start_command(client, message):
     # Respond to start command
@@ -41,45 +46,35 @@ def on_start_command(client, message):
 @app.on_message()
 def reply_to_message(client, message):
     user_id = message.from_user.id
+    # Check if the user is in the database, add them if not
+    user = users_collection.find_one({"user_id": user_id})
+    if not user:
+        add_user_to_db(user_id)
+        user = users_collection.find_one({"user_id": user_id})
+    # Check if the user is a paid user
+    is_paid = user.get("is_paid", False)
+    remaining_replies = user.get("remaining_replies", 0)
+    if remaining_replies == 0:
+        client.send_message(message.chat.id, "Sorry, you have reached your daily limit of replies.")
+        return
     # Get today's date in UTC
     today = datetime.utcnow().date()
-    # Check if user is a paid user
-    is_paid_user = False  # replace with logic to check if user is paid
-    if is_paid_user:
-        max_responses_per_day = 20
-    else:
-        max_responses_per_day = 2
     # Get the number of responses the user has made today
     user_responses = responses_collection.find_one({"user_id": user_id, "date": today})
-    if user_responses and user_responses.get("count", 0) >= max_responses_per_day:
-        client.send_message(message.chat.id, f"Sorry, you have reached the limit of {max_responses_per_day} responses per day.")
+    if user_responses and user_responses.get("count", 0) >= remaining_replies:
+        client.send_message(message.chat.id, "Sorry, you have reached your daily limit of replies.")
         return
     # Generate text using the OpenAI API
     prompt = message.text
     generated_text = generate_text(prompt)
     client.send_message(message.chat.id, generated_text)
+    # Decrement the user's remaining reply count for today
+    users_collection.update_one({"user_id": user_id}, {"$inc": {"remaining_replies": -1}})
     # Increment the user's response count for today
     if user_responses:
         responses_collection.update_one({"_id": user_responses["_id"]}, {"$inc": {"count": 1}})
     else:
         responses_collection.insert_one({"user_id": user_id, "date": today, "count": 1})
 
-@app.on_message(filters.command("add_paid_user"))
-def add_paid_user(client, message):
-    # Check if user is an admin (replace with your own logic to check for admin status)
-    is_admin = False
-    if not is_admin:
-        client.send_message(message.chat.id, "Sorry, you are not authorized to perform this action.")
-        return
-    # Get user ID and add to database
-    user_id = message.text.split()[1]  # Assumes format "/add_paid_user <user_id>"
-    responses_collection.insert_one({"user_id": user_id, "date": datetime.utcnow().date(), "count": 0})
-    client.send_message(message.chat.id, f"User {user_id} has been added as a paid user.")
-
-
 # Start the bot
 app.run()
-
-"""
-When the user sends the `/start` command to the bot, the `on_start_command` function is triggered and sends a welcome message containing a brief description of the bot's capabilities. The bot then listens for incoming messages and generates responses using the OpenAI API's GPT-3.5-Turbo model. If the user exceeds their daily limit of 10 responses, the bot will notify them and stop generating responses.
-"""
