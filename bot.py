@@ -2,13 +2,13 @@ import openai
 import pymongo
 from datetime import datetime
 from pyrogram import Client, filters
-from os import environment
+from os import environ
 
-#environment
-BOT_TOKEN = get.environ("TOKEN")
-API_ID = get.environ("API_ID")
-API_HASH = get.environ("API_HASH")
-MONGOURL = get.environ("MONGOURL")
+# Environment variables
+BOT_TOKEN = environ.get("TOKEN")
+API_ID = environ.get("API_ID")
+API_HASH = environ.get("API_HASH")
+MONGO_URL = environ.get("MONGO_URL")
 
 # Set up OpenAI API credentials
 openai.api_key = "OPENAI_API"
