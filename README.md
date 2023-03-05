@@ -3,17 +3,7 @@ This bot is a chatbot powered by OpenAI's GPT-3.5-Turbo model. It generates resp
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables.
-
-`API_ID` = `your_api_id`
-
-`API_HASH` = `your_api_hash`
-
-`BOT_TOKEN` = `your_bot_token`
-
-`MONGO_URL` = `your_mongodb_url`
-
-`OPEN_API` = `your_openai_api_key`
+To run this project, you will need to add environment variables, please refer bot.py
 
 ## Installation
 
