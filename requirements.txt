@@ -1,4 +1,5 @@
 openai
 pyrogram
 tgcrypto
+pymongo
 aiohttp
